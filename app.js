@@ -1,33 +1,87 @@
 const translations = {
     ru: {
-        title: "Тестирование", labelN: "Количество вопросов (20-100):", start: "Начать тест",
-        progress: (i, n) => `Вопрос ${i} из ${n}`, next: "Далее", finish: "Завершить",
-        resTitle: "Отчёт о тестировании", score: (c, n) => `Правильных ответов: ${c} из ${n}.`,
-        restart: "Пройти заново", errorQ: "Вопрос", yourAns: "Ваш ответ", corrAns: "Правильный ответ"
+        title: "Тестирование", 
+        labelN: "Количество вопросов (20-100):", 
+        start: "Начать тест",
+        progress: (i, n) => `Вопрос ${i} из ${n}`, 
+        next: "Далее", 
+        finish: "Завершить",
+        resTitle: "Отчёт о тестировании", 
+        score: (c, n) => `Правильных ответов: ${c} из ${n}.`,
+        restart: "Пройти заново", 
+        errorQ: "Вопрос", 
+        yourAns: "Ваш ответ", 
+        corrAns: "Правильный ответ",
+        langBtn: "RU",
+        duaTitle: "Рабби йәссир уә лә туъассир. Рабби тәммим бил-хайр, зидни илман.",
+        duaText: "Уа, Раббым! Бұл ісімді жеңілдете гөр, қиындатпа. Бұл ісімді қайырлы ете гөр, білімімді арттыра гөр."
     },
     kz: {
-        title: "Тестілеу", labelN: "Сұрақтар саны (20-100):", start: "Тестті бастау",
-        progress: (i, n) => `${n} сұрақтың ${i}-шісі`, next: "Келесі", finish: "Аяқтау",
-        resTitle: "Тестілеу қорытындысы", score: (c, n) => `Дұрыс жауаптар: ${n} сұрақтың ${c}.`,
-        restart: "Қайтадан бастау", errorQ: "Сұрақ", yourAns: "Сіздің жауабыңыз", corrAns: "Дұрыс жауап"
+        title: "Тестілеу", 
+        labelN: "Сұрақтар саны (20-100):", 
+        start: "Тестті бастау",
+        progress: (i, n) => `${n} сұрақтың ${i}-шісі`, 
+        next: "Келесі", 
+        finish: "Аяқтау",
+        resTitle: "Тестілеу қорытындысы", 
+        score: (c, n) => `Дұрыс жауаптар: ${n} сұрақтың ${c}.`,
+        restart: "Қайтадан бастау", 
+        errorQ: "Сұрақ", 
+        yourAns: "Сіздің жауабыңыз", 
+        corrAns: "Дұрыс жауап",
+        langBtn: "KZ",
+        duaTitle: "Рабби йәссир уә лә туъассир. Рабби тәммим бил-хайр, зидни илман.",
+        duaText: "Уа, Раббым! Бұл ісімді жеңілдете гөр, қиындатпа. Бұл ісімді қайырлы ете гөр, білімімді арттыра гөр."
     }
 };
 
-let currentLang = 'ru';
+// Загрузка сохраненных настроек или установка дефолтных значений
+let currentLang = localStorage.getItem('quiz-lang') || 'ru';
+if (localStorage.getItem('quiz-theme') === 'dark') {
+    document.body.classList.add('dark-theme');
+}
+
 let activeQuestions = [];
 let currentIndex = 0;
 let userAnswers = [];
 let selectedOptionIndex = null;
 
 const els = {
-    langSwitch: document.getElementById('lang-switch'), headerTitle: document.getElementById('header-title'),
-    screenSetup: document.getElementById('screen-setup'), screenQuiz: document.getElementById('screen-quiz'), screenResult: document.getElementById('screen-result'),
-    inputN: document.getElementById('input-n'), btnStart: document.getElementById('btn-start'), labelN: document.getElementById('label-n'),
-    progressText: document.getElementById('progress-text'), progressBar: document.getElementById('progress-bar'), 
-    questionText: document.getElementById('question-text'), optionsContainer: document.getElementById('options-container'),
+    langToggle: document.getElementById('lang-toggle'),
+    themeToggle: document.getElementById('theme-toggle'),
+    headerTitle: document.getElementById('header-title'),
+    screenSetup: document.getElementById('screen-setup'), 
+    screenQuiz: document.getElementById('screen-quiz'), 
+    screenResult: document.getElementById('screen-result'),
+    inputN: document.getElementById('input-n'), 
+    btnStart: document.getElementById('btn-start'), 
+    labelN: document.getElementById('label-n'),
+    progressText: document.getElementById('progress-text'), 
+    progressBar: document.getElementById('progress-bar'), 
+    questionText: document.getElementById('question-text'), 
+    optionsContainer: document.getElementById('options-container'),
     btnNext: document.getElementById('btn-next'),
-    resultTitle: document.getElementById('result-title'), scoreText: document.getElementById('score-text'), errorsContainer: document.getElementById('errors-container'), btnRestart: document.getElementById('btn-restart')
+    resultTitle: document.getElementById('result-title'), 
+    scoreText: document.getElementById('score-text'), 
+    errorsContainer: document.getElementById('errors-container'), 
+    btnRestart: document.getElementById('btn-restart'),
+    duaTitle: document.getElementById('dua-title'),
+    duaText: document.getElementById('dua-text')
 };
+
+// Логика переключения и сохранения темы
+els.themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark-theme');
+    const isDark = document.body.classList.contains('dark-theme');
+    localStorage.setItem('quiz-theme', isDark ? 'dark' : 'light');
+});
+
+// Логика переключения и сохранения языка
+els.langToggle.addEventListener('click', () => {
+    currentLang = currentLang === 'ru' ? 'kz' : 'ru';
+    localStorage.setItem('quiz-lang', currentLang);
+    updateTexts();
+});
 
 function updateTexts() {
     const t = translations[currentLang];
@@ -36,6 +90,9 @@ function updateTexts() {
     els.btnStart.textContent = t.start;
     els.resultTitle.textContent = t.resTitle;
     els.btnRestart.textContent = t.restart;
+    els.langToggle.textContent = t.langBtn;
+    els.duaTitle.textContent = t.duaTitle;
+    els.duaText.textContent = t.duaText;
     
     if (activeQuestions.length > 0 && !els.screenQuiz.classList.contains('hidden')) {
         els.progressText.textContent = t.progress(currentIndex + 1, activeQuestions.length);
@@ -43,11 +100,6 @@ function updateTexts() {
         renderQuestionText();
     }
 }
-
-els.langSwitch.addEventListener('change', (e) => {
-    currentLang = e.target.value;
-    updateTexts();
-});
 
 function shuffleArray(array) {
     let arr = [...array];
@@ -80,10 +132,8 @@ function renderQuestion() {
     const t = translations[currentLang];
     const total = activeQuestions.length;
     
-    // Обновление прогресс-бара и текста
     els.progressText.textContent = t.progress(currentIndex + 1, total);
     els.progressBar.style.width = `${((currentIndex + 1) / total) * 100}%`;
-    
     els.btnNext.textContent = currentIndex === total - 1 ? t.finish : t.next;
     
     renderQuestionText();
@@ -97,7 +147,6 @@ function renderQuestionText() {
     els.questionText.textContent = langData.q;
     els.optionsContainer.innerHTML = '';
     
-    // Создаем массив объектов с привязкой к исходным индексам, чтобы после перемешивания знать, какой ответ был выбран
     let optionsWithIndices = langData.a.map((text, idx) => ({ text, originalIndex: idx }));
     optionsWithIndices = shuffleArray(optionsWithIndices);
     
@@ -108,7 +157,7 @@ function renderQuestionText() {
         const radio = document.createElement('input');
         radio.type = "radio";
         radio.name = "quiz-option";
-        radio.value = opt.originalIndex; // Значением input является исходный индекс
+        radio.value = opt.originalIndex;
         radio.className = "option-input";
         
         if (selectedOptionIndex === opt.originalIndex) {
@@ -181,7 +230,8 @@ function showResults() {
 els.btnRestart.addEventListener('click', () => {
     els.screenResult.classList.add('hidden');
     els.screenSetup.classList.remove('hidden');
-    els.progressBar.style.width = '0%'; // Сброс бара
+    els.progressBar.style.width = '0%';
 });
 
+// Инициализация текстов с учетом сохраненного языка
 updateTexts();

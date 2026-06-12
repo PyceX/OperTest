@@ -3,6 +3,7 @@
     --primary-hover: #1d4ed8;
     --bg-color: #f3f4f6;
     --card-bg: #ffffff;
+    --header-bg: #f9fafb;
     --text-main: #111827;
     --text-muted: #6b7280;
     --border-color: #e5e7eb;
@@ -10,7 +11,28 @@
     --error-border: #fca5a5;
     --error-text: #dc2626;
     --success-text: #16a34a;
+    --dua-bg: #eff6ff;
+    --dua-border: #bfdbfe;
+    --dua-text: #1e3a8a;
     --radius: 10px;
+}
+
+body.dark-theme {
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --bg-color: #111827;
+    --card-bg: #1f2937;
+    --header-bg: #1f2937;
+    --text-main: #f9fafb;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --error-bg: #450a0a;
+    --error-border: #7f1d1d;
+    --error-text: #fca5a5;
+    --success-text: #4ade80;
+    --dua-bg: #0f172a;
+    --dua-border: #1e293b;
+    --dua-text: #bae6fd;
 }
 
 * {
@@ -28,6 +50,7 @@ body {
     justify-content: center;
     padding: 16px;
     min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .app-container {
@@ -39,6 +62,7 @@ body {
     border: 1px solid var(--border-color);
     overflow: hidden;
     align-self: flex-start;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .header {
@@ -47,7 +71,8 @@ body {
     align-items: center;
     padding: 16px 20px;
     border-bottom: 1px solid var(--border-color);
-    background-color: #f9fafb;
+    background-color: var(--header-bg);
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .header h1 {
@@ -55,21 +80,81 @@ body {
     font-weight: 600;
 }
 
-.lang-select {
-    padding: 6px 10px;
+.header-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.icon-btn, .lang-btn {
+    background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background-color: var(--card-bg);
+    color: var(--text-main);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    position: relative;
+    overflow: hidden;
+}
+
+.lang-btn {
+    height: 36px;
+    padding: 0 12px;
     font-size: 0.875rem;
-    outline: none;
+    font-weight: 600;
 }
 
-.screen {
-    padding: 20px;
+.icon-btn:hover, .lang-btn:hover {
+    border-color: var(--primary);
 }
 
-.hidden {
-    display: none !important;
+.sun-icon, .moon-icon {
+    position: absolute;
+    transition: all 0.4s ease;
+}
+
+body:not(.dark-theme) .moon-icon {
+    opacity: 0;
+    transform: translateY(20px) rotate(45deg);
+}
+
+body.dark-theme .sun-icon {
+    opacity: 0;
+    transform: translateY(-20px) rotate(-45deg);
+}
+
+.screen { padding: 20px; }
+.hidden { display: none !important; }
+
+.dua-card {
+    background-color: var(--dua-bg);
+    border: 1px solid var(--dua-border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 24px;
+    text-align: center;
+    color: var(--dua-text);
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.dua-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.dua-card p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    white-space: pre-line;
+    font-style: italic;
 }
 
 label {
@@ -88,6 +173,9 @@ input[type="number"] {
     font-size: 1rem;
     margin-bottom: 24px;
     outline: none;
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 }
 
 input[type="number"]:focus {
@@ -102,7 +190,7 @@ input[type="number"]:focus {
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .btn-primary {
@@ -110,9 +198,7 @@ input[type="number"]:focus {
     color: #fff;
 }
 
-.btn-primary:hover {
-    background-color: var(--primary-hover);
-}
+.btn-primary:hover { background-color: var(--primary-hover); }
 
 .btn-secondary {
     background-color: var(--border-color);
@@ -124,12 +210,8 @@ input[type="number"]:focus {
     color: #fff;
 }
 
-.btn[disabled] {
-    cursor: not-allowed;
-    opacity: 0.7;
-}
+.btn[disabled] { cursor: not-allowed; opacity: 0.7; }
 
-/* Стили прогресс-бара */
 .progress-container {
     width: 100%;
     height: 6px;
@@ -179,9 +261,7 @@ input[type="number"]:focus {
     transition: all 0.2s;
 }
 
-.option-input {
-    display: none;
-}
+.option-input { display: none; }
 
 .option-custom-radio {
     width: 18px;
@@ -205,21 +285,13 @@ input[type="number"]:focus {
     display: none;
 }
 
-.option-input:checked + .option-custom-radio {
-    border-color: var(--primary);
-}
-
-.option-input:checked + .option-custom-radio::after {
-    display: block;
-}
-
-.option-input:checked ~ .option-text {
-    color: var(--text-main);
-}
+.option-input:checked + .option-custom-radio { border-color: var(--primary); }
+.option-input:checked + .option-custom-radio::after { display: block; }
+.option-input:checked ~ .option-text { color: var(--text-main); font-weight: 500; }
 
 .option-label:has(.option-input:checked) {
     border-color: var(--primary);
-    background-color: #eff6ff;
+    background-color: var(--dua-bg); /* Использование цвета фона дұға для выбранного ответа */
 }
 
 .option-text {
@@ -250,27 +322,12 @@ input[type="number"]:focus {
     border-radius: 8px;
     padding: 12px;
     font-size: 0.9rem;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
-.error-card p {
-    margin-bottom: 6px;
-}
-
-.error-card p:last-child {
-    margin-bottom: 0;
-}
-
-.error-q {
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.error-u {
-    color: var(--error-text);
-}
-
-.error-c {
-    color: var(--success-text);
-}
-
+.error-card p { margin-bottom: 6px; }
+.error-card p:last-child { margin-bottom: 0; }
+.error-q { font-weight: 600; color: var(--text-main); }
+.error-u { color: var(--error-text); }
+.error-c { color: var(--success-text); }
 .mt-4 { margin-top: 16px; }
