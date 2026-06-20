@@ -14,7 +14,17 @@ const translations = {
         corrAns: "Правильный ответ",
         langBtn: "RU",
         duaTitle: "Рабби йәссир уә лә туъассир. Рабби тәммим бил-хайр, зидни илман.",
-        duaText: "Уа, Раббым! Бұл ісімді жеңілдете гөр, қиындатпа. Бұл ісімді қайырлы ете гөр, білімімді арттыра гөр."
+        duaText: "Уа, Раббым! Бұл ісімді жеңілдете гөр, қиындатпа. Бұл ісімді қайырлы ете гөр, білімімді арттыра гөр.",
+        modeTitle: "Выберите режим",
+        btnTheory: "Теория (Тестирование)",
+        btnPractice: "Практическое задание",
+        practiceSelectTitle: "Выбор практического задания",
+        btnBack: "Назад",
+        btnExit: "Выйти",
+        btnToTest: "Перейти к тесту",
+        btnFinishTest: "Завершить тест",
+        testInstruction: "Пронумеруйте действия в правильном порядке.",
+        pracResTitle: "Результат практического задания"
     },
     kz: {
         title: "Тестілеу", 
@@ -31,7 +41,17 @@ const translations = {
         corrAns: "Дұрыс жауап",
         langBtn: "KZ",
         duaTitle: "Рабби йәссир уә лә туъассир. Рабби тәммим бил-хайр, зидни илман.",
-        duaText: "Уа, Раббым! Бұл ісімді жеңілдете гөр, қиындатпа. Бұл ісімді қайырлы ете гөр, білімімді арттыра гөр."
+        duaText: "Уа, Раббым! Бұл ісімді жеңілдете гөр, қиындатпа. Бұл ісімді қайырлы ете гөр, білімімді арттыра гөр.",
+        modeTitle: "Режимді таңдаңыз",
+        btnTheory: "Теория (Тестілеу)",
+        btnPractice: "Тәжірибелік тапсырма",
+        practiceSelectTitle: "Тәжірибелік тапсырманы таңдау",
+        btnBack: "Артқа",
+        btnExit: "Шығу",
+        btnToTest: "Тестке өту",
+        btnFinishTest: "Тестті аяқтау",
+        testInstruction: "Әрекеттерді дұрыс ретпен нөмірлеңіз.",
+        pracResTitle: "Тәжірибелік тапсырма нәтижесі"
     }
 };
 
@@ -40,6 +60,16 @@ let currentLang = localStorage.getItem('quiz-lang') || 'ru';
 if (localStorage.getItem('quiz-theme') === 'dark') {
     document.body.classList.add('dark-theme');
 }
+// Новые DOM элементы
+const screenPracticeTest = document.getElementById('screen-practice-test');
+const btnToPracticeTest = document.getElementById('btn-to-practice-test');
+const btnFinishPracticeTest = document.getElementById('btn-finish-practice-test');
+const btnPracticeTestExit = document.getElementById('btn-practice-test-exit');
+const practiceTestListContainer = document.getElementById('practice-test-list-container');
+const practiceTestTitle = document.getElementById('practice-test-title');
+
+let testItems = [];
+let currentStepNumber = 1;
 
 let activeQuestions = [];
 let currentIndex = 0;
@@ -94,11 +124,34 @@ function updateTexts() {
     els.duaTitle.textContent = t.duaTitle;
     els.duaText.textContent = t.duaText;
     
+    // Новые элементы
+    if(document.getElementById('mode-title')) document.getElementById('mode-title').textContent = t.modeTitle;
+    if(document.getElementById('btn-mode-theory')) document.getElementById('btn-mode-theory').textContent = t.btnTheory;
+    if(document.getElementById('btn-mode-practice')) document.getElementById('btn-mode-practice').textContent = t.btnPractice;
+    if(document.getElementById('practice-select-title')) document.getElementById('practice-select-title').textContent = t.practiceSelectTitle;
+    if(document.getElementById('btn-back-to-mode')) document.getElementById('btn-back-to-mode').textContent = t.btnBack;
+    if(document.getElementById('btn-practice-exit')) document.getElementById('btn-practice-exit').textContent = t.btnExit;
+    if(document.getElementById('btn-to-practice-test')) document.getElementById('btn-to-practice-test').textContent = t.btnToTest;
+    if(document.getElementById('btn-practice-test-exit')) document.getElementById('btn-practice-test-exit').textContent = t.btnExit;
+    if(document.getElementById('btn-finish-practice-test')) document.getElementById('btn-finish-practice-test').textContent = t.btnFinishTest;
+    if(document.getElementById('practice-test-instruction')) document.getElementById('practice-test-instruction').textContent = t.testInstruction;
+    
     if (activeQuestions.length > 0 && !els.screenQuiz.classList.contains('hidden')) {
         els.progressText.textContent = t.progress(currentIndex + 1, activeQuestions.length);
         els.btnNext.textContent = currentIndex === activeQuestions.length - 1 ? t.finish : t.next;
         renderQuestionText();
     }
+}
+
+// Вспомогательная функция перемешивания
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
 }
 
 function shuffleArray(array) {
@@ -229,9 +282,239 @@ function showResults() {
 
 els.btnRestart.addEventListener('click', () => {
     els.screenResult.classList.add('hidden');
-    els.screenSetup.classList.remove('hidden');
+    //els.screenSetup.classList.remove('hidden');
+    document.getElementById('screen-mode-selection').classList.remove('hidden');
     els.progressBar.style.width = '0%';
 });
+
+// Элементы DOM для практики
+const screenModeSelection = document.getElementById('screen-mode-selection');
+const screenPracticeSelection = document.getElementById('screen-practice-selection');
+const screenPracticeTask = document.getElementById('screen-practice-task');
+const screenSetup = document.getElementById('screen-setup');
+
+const btnModeTheory = document.getElementById('btn-mode-theory');
+const btnModePractice = document.getElementById('btn-mode-practice');
+const btnBackToMode = document.getElementById('btn-back-to-mode');
+const btnPracticeExit = document.getElementById('btn-practice-exit');
+const btnFinishPractice = document.getElementById('btn-finish-practice');
+
+const practiceTitle = document.getElementById('practice-title');
+const practiceListContainer = document.getElementById('practice-list-container');
+
+let currentPracticeModule = null;
+
+// Навигация
+btnModeTheory.addEventListener('click', () => {
+    screenModeSelection.classList.add('hidden');
+    screenSetup.classList.remove('hidden');
+});
+
+btnModePractice.addEventListener('click', () => {
+    screenModeSelection.classList.add('hidden');
+    screenPracticeSelection.classList.remove('hidden');
+});
+
+btnBackToMode.addEventListener('click', () => {
+    screenPracticeSelection.classList.add('hidden');
+    screenModeSelection.classList.remove('hidden');
+});
+
+btnPracticeExit.addEventListener('click', () => {
+    screenPracticeTask.classList.add('hidden');
+    screenPracticeSelection.classList.remove('hidden');
+});
+
+// Выбор модуля
+document.querySelectorAll('.btn-practice-select').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const moduleId = e.target.getAttribute('data-module');
+        startPractice(moduleId);
+    });
+});
+
+// Запуск и рендер практики
+function startPractice(moduleId) {
+    currentPracticeModule = practiceDb.modules[moduleId];
+    screenPracticeSelection.classList.add('hidden');
+    screenPracticeTask.classList.remove('hidden');
+    //btnFinishPractice.disabled = true;
+    btnToPracticeTest.disabled = false;
+    
+    practiceTitle.textContent = currentPracticeModule[currentLang].title;
+    practiceListContainer.innerHTML = '';
+
+    // Сборка упорядоченного массива: СИЗ (p) -> Инструменты (t/m) -> Шаги (s)
+    const validItems = currentPracticeModule.validItems;
+    const ppe = validItems.filter(item => item.id.startsWith('p'));
+    const tools = validItems.filter(item => item.id.startsWith('t') || item.id.startsWith('m'));
+    const steps = currentPracticeModule.steps;
+    
+    const combinedList = [...ppe, ...tools, ...steps];
+
+    combinedList.forEach((item, index) => {
+        const isFirst = index === 0;
+        const label = document.createElement('label');
+        label.className = `practice-item ${isFirst ? '' : 'locked'}`;
+        label.id = `practice-item-${index}`;
+        
+        label.innerHTML = `
+            <input type="checkbox" class="practice-checkbox" id="check-${index}">
+            <div class="practice-number">${index + 1}</div>
+            <div class="practice-text">${item[currentLang]}</div>
+        `;
+        
+        practiceListContainer.appendChild(label);
+        
+        const checkbox = label.querySelector('.practice-checkbox');
+        
+        // Логика жесткой последовательности и блокировки ввода
+        checkbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                label.classList.add('completed');
+                
+                // Разблокировка следующего элемента
+                if (index + 1 < combinedList.length) {
+                    const nextLabel = document.getElementById(`practice-item-${index + 1}`);
+                    nextLabel.classList.remove('locked');
+                } else {
+                    btnFinishPractice.disabled = false; // Все выполнено
+                }
+            } else {
+                label.classList.remove('completed');
+                btnFinishPractice.disabled = true;
+                
+                // Каскадная блокировка всех последующих элементов при снятии галочки
+                for (let i = index + 1; i < combinedList.length; i++) {
+                    const subsequentLabel = document.getElementById(`practice-item-${i}`);
+                    const subsequentCheckbox = document.getElementById(`check-${i}`);
+                    subsequentLabel.classList.add('locked');
+                    subsequentLabel.classList.remove('completed');
+                    subsequentCheckbox.checked = false;
+                }
+            }
+        });
+    });
+}
+
+btnToPracticeTest.addEventListener('click', () => {
+    document.getElementById('screen-practice-task').classList.add('hidden');
+    startPracticeTest();
+});
+
+btnPracticeTestExit.addEventListener('click', () => {
+    screenPracticeTest.classList.add('hidden');
+    document.getElementById('screen-practice-selection').classList.remove('hidden');
+});
+
+function startPracticeTest() {
+    screenPracticeTest.classList.remove('hidden');
+    btnFinishPracticeTest.disabled = true;
+    currentStepNumber = 1;
+    practiceTestListContainer.innerHTML = '';
+    
+    practiceTestTitle.textContent = currentPracticeModule[currentLang].title;
+
+    // Сборка массива
+    const validItems = currentPracticeModule.validItems;
+    const ppe = validItems.filter(item => item.id.startsWith('p'));
+    const tools = validItems.filter(item => item.id.startsWith('t') || item.id.startsWith('m'));
+    const steps = currentPracticeModule.steps;
+    
+    const originalList = [...ppe, ...tools, ...steps];
+    
+    // Сохраняем оригинальный индекс для проверки
+    testItems = originalList.map((item, idx) => ({ ...item, originalIndex: idx, userAnswer: null }));
+    testItems = shuffle(testItems);
+
+    testItems.forEach((item, index) => {
+        const label = document.createElement('div');
+        label.className = 'practice-item';
+        
+        const circle = document.createElement('div');
+        circle.className = 'practice-test-circle';
+        circle.dataset.index = index;
+        
+        const text = document.createElement('div');
+        text.className = 'practice-text';
+        text.textContent = item[currentLang];
+
+        label.appendChild(circle);
+        label.appendChild(text);
+        practiceTestListContainer.appendChild(label);
+
+        circle.addEventListener('click', () => {
+            const currentVal = parseInt(circle.textContent);
+            
+            if (!isNaN(currentVal)) {
+                // Если кликнули по заполненному кружку — сбрасываем его и все последующие
+                currentStepNumber = currentVal;
+                document.querySelectorAll('.practice-test-circle').forEach(c => {
+                    const val = parseInt(c.textContent);
+                    if (!isNaN(val) && val >= currentVal) {
+                        c.textContent = '';
+                        c.classList.remove('numbered');
+                        testItems[c.dataset.index].userAnswer = null;
+                    }
+                });
+                btnFinishPracticeTest.disabled = true;
+            } else {
+                // Назначаем текущий номер
+                circle.textContent = currentStepNumber;
+                circle.classList.add('numbered');
+                testItems[index].userAnswer = currentStepNumber - 1; // 0-index
+                currentStepNumber++;
+
+                if (currentStepNumber > testItems.length) {
+                    btnFinishPracticeTest.disabled = false;
+                }
+            }
+        });
+    });
+}
+
+btnFinishPracticeTest.addEventListener('click', () => {
+    screenPracticeTest.classList.add('hidden');
+    showPracticeResults();
+});
+
+function showPracticeResults() {
+    const screenResult = document.getElementById('screen-result');
+    screenResult.classList.remove('hidden');
+    
+    const t = translations[currentLang];
+    document.getElementById('result-title').textContent = t.pracResTitle;
+    const errorsContainer = document.getElementById('errors-container');
+    errorsContainer.innerHTML = '';
+    
+    let correctCount = 0;
+    
+    // Сортируем то, как ответил пользователь
+    const userSequence = [...testItems].sort((a, b) => a.userAnswer - b.userAnswer);
+
+    userSequence.forEach((item, idx) => {
+        if (item.originalIndex === idx) {
+            correctCount++;
+        } else {
+            const errDiv = document.createElement('div');
+            errDiv.className = "error-card";
+            // Ищем, что на самом деле должно быть на этом шаге
+            const correctItem = testItems.find(i => i.originalIndex === idx);
+            errDiv.innerHTML = `
+                <p class="error-q">Шаг ${idx + 1}:</p>
+                <p class="error-u"><strong>Ваш выбор:</strong> ${item[currentLang]}</p>
+                <p class="error-c"><strong>Должно быть:</strong> ${correctItem ? correctItem[currentLang] : 'Ошибка'}</p>
+            `;
+            errorsContainer.appendChild(errDiv);
+        }
+    });
+
+    document.getElementById('score-text').textContent = t.score(correctCount, testItems.length);
+    
+    if(correctCount === testItems.length) {
+        errorsContainer.innerHTML = `<p style="color: var(--success-text); font-weight: 500;">Отличный результат, ошибок нет!</p>`;
+    }
+}
 
 // Инициализация текстов с учетом сохраненного языка
 updateTexts();

@@ -331,3 +331,93 @@ input[type="number"]:focus {
 .error-u { color: var(--error-text); }
 .error-c { color: var(--success-text); }
 .mt-4 { margin-top: 16px; }
+
+/* Стили для практики */
+.compact-card {
+    padding: 20px;
+    text-align: center;
+}
+
+.practice-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--card-bg);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.practice-item.locked {
+    opacity: 0.5;
+    pointer-events: none;
+    background-color: var(--bg-color);
+}
+
+.practice-item.completed {
+    border-color: var(--success-text);
+    background-color: var(--dua-bg);
+}
+
+.practice-checkbox {
+    display: none;
+}
+
+.practice-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.practice-checkbox:checked + .practice-number {
+    background-color: var(--success-text);
+    border-color: var(--success-text);
+    color: white;
+}
+
+.practice-text {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    text-align: left;
+}
+
+.practice-test-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--card-bg);
+    border: 2px solid var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    color: var(--primary);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.practice-test-circle.numbered {
+    border-color: var(--primary);
+    background-color: var(--dua-bg);
+}
+
+.text-muted {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+.mb-4 { margin-bottom: 16px; }

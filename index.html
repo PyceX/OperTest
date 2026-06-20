@@ -18,8 +18,40 @@
                 <button id="lang-toggle" class="lang-btn">RU</button>
             </div>
         </header>
+        
+        <section id="screen-mode-selection" class="screen">
+            <div class="card compact-card">
+                <h2 id="mode-title">Выберите режим</h2>
+                <button id="btn-mode-theory" class="btn btn-primary mt-4">Теория (Тестирование)</button>
+                <button id="btn-mode-practice" class="btn btn-secondary mt-4">Практическое задание</button>
+            </div>
+        </section>
+        
+        <section id="screen-practice-selection" class="screen hidden">
+            <div class="card compact-card">
+                <h2 id="practice-select-title">Выбор практического задания</h2>
+                <button class="btn btn-primary mt-4 btn-practice-select" data-module="salnik">Смена сальниковой набивки СУСГ</button>
+                <button class="btn btn-primary mt-4 btn-practice-select" data-module="manometer">Смена манометра</button>
+                <button id="btn-back-to-mode" class="btn btn-secondary mt-4">Назад</button>
+            </div>
+        </section>
+        
+        <section id="screen-practice-task" class="screen hidden">
+            <h2 id="practice-title" class="question-text"></h2>
+            <div id="practice-list-container" class="options-container"></div>
+            <button id="btn-to-practice-test" class="btn btn-primary mt-4" disabled>Перейти к тесту</button>
+            <button id="btn-practice-exit" class="btn btn-secondary mt-4">Выйти</button>
+        </section>
+        
+        <section id="screen-practice-test" class="screen hidden">
+            <h2 id="practice-test-title" class="question-text"></h2>
+            <p id="practice-test-instruction" class="text-muted mb-4"></p>
+            <div id="practice-test-list-container" class="options-container"></div>
+            <button id="btn-finish-practice-test" class="btn btn-primary mt-4" disabled>Завершить тест</button>
+            <button id="btn-practice-test-exit" class="btn btn-secondary mt-4">Выйти</button>
+        </section>
 
-        <section id="screen-setup" class="screen">
+        <section id="screen-setup" class="screen hidden">
             <div class="dua-card">
                 <h3 id="dua-title"></h3>
                 <p id="dua-text"></p>
@@ -50,6 +82,7 @@
     </div>
 
     <script src="questions.js"></script>
+    <script src="practice.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
