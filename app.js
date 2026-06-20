@@ -443,7 +443,7 @@ function startPracticeTest() {
         label.appendChild(text);
         practiceTestListContainer.appendChild(label);
 
-        circle.addEventListener('click', () => {
+        label.addEventListener('click', () => {
             const currentVal = parseInt(circle.textContent);
             
             if (!isNaN(currentVal)) {
