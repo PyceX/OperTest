@@ -135,6 +135,7 @@ function updateTexts() {
     if(document.getElementById('btn-practice-test-exit')) document.getElementById('btn-practice-test-exit').textContent = t.btnExit;
     if(document.getElementById('btn-finish-practice-test')) document.getElementById('btn-finish-practice-test').textContent = t.btnFinishTest;
     if(document.getElementById('practice-test-instruction')) document.getElementById('practice-test-instruction').textContent = t.testInstruction;
+    if(document.getElementById('btn-theory-back')) document.getElementById('btn-theory-back').textContent = t.btnBack;
     
     if (activeQuestions.length > 0 && !els.screenQuiz.classList.contains('hidden')) {
         els.progressText.textContent = t.progress(currentIndex + 1, activeQuestions.length);
@@ -302,6 +303,8 @@ const btnFinishPractice = document.getElementById('btn-finish-practice');
 const practiceTitle = document.getElementById('practice-title');
 const practiceListContainer = document.getElementById('practice-list-container');
 
+const btnTheoryBack = document.getElementById('btn-theory-back');
+
 let currentPracticeModule = null;
 
 // Навигация
@@ -313,6 +316,11 @@ btnModeTheory.addEventListener('click', () => {
 btnModePractice.addEventListener('click', () => {
     screenModeSelection.classList.add('hidden');
     screenPracticeSelection.classList.remove('hidden');
+});
+
+btnTheoryBack.addEventListener('click', () => {
+    screenSetup.classList.add('hidden');
+    screenModeSelection.classList.remove('hidden');
 });
 
 btnBackToMode.addEventListener('click', () => {

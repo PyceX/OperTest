@@ -20,6 +20,10 @@
         </header>
         
         <section id="screen-mode-selection" class="screen">
+            <div class="dua-card">
+                <h3 id="dua-title"></h3>
+                <p id="dua-text"></p>
+            </div>
             <div class="card compact-card">
                 <h2 id="mode-title">Выберите режим</h2>
                 <button id="btn-mode-theory" class="btn btn-primary mt-4">Теория (Тестирование)</button>
@@ -52,14 +56,10 @@
         </section>
 
         <section id="screen-setup" class="screen hidden">
-            <div class="dua-card">
-                <h3 id="dua-title"></h3>
-                <p id="dua-text"></p>
-            </div>
-            
             <label id="label-n" for="input-n">Количество вопросов (20-100):</label>
             <input type="number" id="input-n" min="20" max="100" value="20">
             <button id="btn-start" class="btn btn-primary">Начать тест</button>
+            <button id="btn-theory-back" class="btn btn-secondary mt-4">Назад</button>
         </section>
 
         <section id="screen-quiz" class="screen hidden">
